@@ -11,25 +11,7 @@ const Cart = () => {
   const { state, updateQuantity, removeFromCart } = useCart();
   const { user } = useAuth();
   
-  if (!user) {
-    return (
-      <>
-        <Navigation />
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center">
-            <ShoppingBag className="w-24 h-24 mx-auto text-muted-foreground mb-6" />
-            <h1 className="text-3xl font-bold mb-4">Please sign in</h1>
-            <p className="text-muted-foreground mb-8">Sign in to view your cart and continue shopping!</p>
-            <Link to="/auth">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow">
-                Sign In
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </>
-    );
-  }
+  // Remove the redirect for non-logged-in users - they can now use cart as guests
 
   if (state.loading) {
     return (
@@ -107,6 +89,8 @@ const Cart = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        disabled={!user} // Disable quantity increase for guest users
+                        title={!user ? "Sign in to change quantities" : ""}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
@@ -135,6 +119,11 @@ const Cart = () => {
                 <CardTitle>Order Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!user && (
+                  <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
+                    Shopping as guest - Sign in to save your cart and access quantity controls
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span>Subtotal</span>
                   <span>${state.total.toFixed(2)}</span>

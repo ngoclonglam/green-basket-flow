@@ -5,6 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import { Product } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/useToast";
+import { useState } from "react";
 
 interface ProductCardProps {
   product: Product;
@@ -13,9 +14,19 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const [isAnimating, setIsAnimating] = useState(false);
   
-  const handleAddToCart = () => {
-    addToCart(product);
+  const handleAddToCart = async () => {
+    // Trigger animation
+    setIsAnimating(true);
+    
+    // Add to cart
+    await addToCart(product);
+    
+    // Reset animation after it completes
+    setTimeout(() => {
+      setIsAnimating(false);
+    }, 400);
   };
   
   return (
@@ -48,7 +59,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           className="w-full bg-gradient-to-r from-primary to-primary-glow hover:from-primary-glow hover:to-primary transition-all duration-300"
           size="lg"
         >
-          <ShoppingCart className="w-4 h-4 mr-2" />
+          <ShoppingCart className={`w-4 h-4 mr-2 ${isAnimating ? 'animate-cart-jump' : ''}`} />
           Add to Cart
         </Button>
       </CardFooter>

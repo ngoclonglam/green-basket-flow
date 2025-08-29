@@ -5,6 +5,9 @@ import { Product } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/useToast';
 import { CartContext, CartContextType, CartState, CartAction, CartItem } from './useCart';
 
+// Local storage key for guest cart
+const GUEST_CART_KEY = 'guest_cart';
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'SET_LOADING':
@@ -19,6 +22,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
       const existingItem = state.items.find(item => item.id === action.payload.id);
       
       if (existingItem) {
+        // For guests, don't increase quantity - they can only have 1 of each item
         const updatedItems = state.items.map(item =>
           item.id === action.payload.id
             ? { ...item, quantity: item.quantity + 1 }
@@ -29,6 +33,22 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           items: updatedItems,
           total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
         };
+      }
+      
+      const newItems = [...state.items, { ...action.payload, quantity: 1 }];
+      return {
+        ...state,
+        items: newItems,
+        total: newItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      };
+    }
+    
+    case 'ADD_ITEM_GUEST': {
+      const existingItem = state.items.find(item => item.id === action.payload.id);
+      
+      // For guests, don't increase quantity if item already exists
+      if (existingItem) {
+        return state;
       }
       
       const newItems = [...state.items, { ...action.payload, quantity: 1 }];
@@ -87,15 +107,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Sync cart with database when user logs in
+  // Load guest cart on mount and sync with database when user logs in
   useEffect(() => {
     if (user) {
       syncCart();
     } else {
-      // Clear cart when user logs out
-      dispatch({ type: 'CLEAR_CART' });
+      // Load guest cart from localStorage
+      loadGuestCart();
     }
   }, [user]);
+
+  // Save guest cart to localStorage whenever state changes
+  useEffect(() => {
+    if (!user && state.items.length > 0) {
+      localStorage.setItem(GUEST_CART_KEY, JSON.stringify(state.items));
+    }
+  }, [state.items, user]);
+
+  const loadGuestCart = () => {
+    try {
+      const savedCart = localStorage.getItem(GUEST_CART_KEY);
+      if (savedCart) {
+        const items: CartItem[] = JSON.parse(savedCart);
+        dispatch({ type: 'SET_ITEMS', payload: items });
+      }
+    } catch (error) {
+      console.error('Error loading guest cart:', error);
+      localStorage.removeItem(GUEST_CART_KEY);
+    }
+  };
 
   const syncCart = async () => {
     if (!user) return;
@@ -146,10 +186,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = async (product: Product) => {
     if (!user) {
+      // Guest user - add to local cart
+      const existingItem = state.items.find(item => item.id === product.id);
+      
+      if (existingItem) {
+        toast({
+          title: "Item already in cart",
+          description: "Sign in to add multiple quantities",
+        });
+        return;
+      }
+      
+      dispatch({ type: 'ADD_ITEM_GUEST', payload: product });
+      
       toast({
-        title: "Please sign in",
-        description: "You need to be logged in to add items to cart",
-        variant: "destructive"
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart`,
       });
       return;
     }
@@ -188,7 +240,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeFromCart = async (productId: string) => {
-    if (!user) return;
+    if (!user) {
+      // Guest user - remove from local cart
+      dispatch({ type: 'REMOVE_ITEM', payload: productId });
+      return;
+    }
 
     try {
       dispatch({ type: 'REMOVE_ITEM', payload: productId });
@@ -212,7 +268,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = async (productId: string, quantity: number) => {
-    if (!user) return;
+    if (!user) {
+      // Guest users can only remove items, not change quantities
+      if (quantity <= 0) {
+        removeFromCart(productId);
+      } else {
+        toast({
+          title: "Sign in to change quantities",
+          description: "Guests can only have 1 of each item",
+        });
+      }
+      return;
+    }
 
     try {
       dispatch({ type: 'UPDATE_QUANTITY', payload: { id: productId, quantity } });
@@ -241,7 +308,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = async () => {
-    if (!user) return;
+    if (!user) {
+      // Guest user - clear local cart
+      dispatch({ type: 'CLEAR_CART' });
+      localStorage.removeItem(GUEST_CART_KEY);
+      return;
+    }
 
     try {
       dispatch({ type: 'CLEAR_CART' });

@@ -127,3 +127,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Cart button click animation */
+  @keyframes cart-jump {
+    0%, 100% { transform: scale(1) translateY(0); }
+    25% { transform: scale(1.1) translateY(-4px); opacity: 0.8; }
+    50% { transform: scale(1.05) translateY(-2px); opacity: 0.6; }
+    75% { transform: scale(1.02) translateY(-1px); opacity: 0.9; }
+  }
+  
+  .animate-cart-jump {
+    animation: cart-jump 0.4s ease-out;
+  }
+}
+}
