@@ -19,7 +19,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   };
   
   return (
-    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <Card className="group overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-3">
       <div className="aspect-square overflow-hidden">
         <img 
           src={product.image_url} 
@@ -31,7 +31,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         />
       </div>
       
-      <CardContent className="p-4">
+      <CardContent className="p-4 flex-grow">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold text-lg">{product.name}</h3>
           <Badge variant="secondary">{product.unit}</Badge>
