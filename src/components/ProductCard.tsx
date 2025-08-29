@@ -47,7 +47,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           <h3 className="font-semibold text-lg">{product.name}</h3>
           <Badge variant="secondary">{product.unit}</Badge>
         </div>
-        <p className="text-muted-foreground text-sm mb-3">{product.description}</p>
+        <p className="text-muted-foreground text-sm mb-3 h-10">{product.description}</p>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</span>
         </div>
