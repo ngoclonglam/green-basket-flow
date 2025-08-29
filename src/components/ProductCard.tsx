@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
 import { Product } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 
 interface ProductCardProps {
   product: Product;

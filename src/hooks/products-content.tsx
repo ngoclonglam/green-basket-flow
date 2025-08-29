@@ -1,29 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Product, Category, ProductsContext } from '@/hooks/useProducts';
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  image_url: string;
-  unit: string;
-  category_id: string;
-  in_stock: boolean;
-  category?: {
-    name: string;
-    description: string;
-  };
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  description: string;
-  image_url: string;
-}
-
-export const useProducts = () => {
+export const ProductsProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -59,8 +38,12 @@ export const useProducts = () => {
 
       setCategories(categoriesData || []);
       setProducts(productsData || []);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -69,8 +52,8 @@ export const useProducts = () => {
   const getProductsByCategory = (categoryId: string) => {
     return products.filter(product => product.category_id === categoryId);
   };
-
-  return {
+  
+  const value = {
     products,
     categories,
     loading,
@@ -78,4 +61,10 @@ export const useProducts = () => {
     getProductsByCategory,
     refetch: fetchData
   };
+
+  return (
+    <ProductsContext.Provider value={value}>
+      {children}
+    </ProductsContext.Provider>
+  );
 };

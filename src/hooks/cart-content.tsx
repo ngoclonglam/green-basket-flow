@@ -1,38 +1,9 @@
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import React, { useReducer, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Product } from '@/hooks/useProducts';
-import { useToast } from '@/hooks/use-toast';
-
-export interface CartItem extends Product {
-  quantity: number;
-}
-
-interface CartState {
-  items: CartItem[];
-  total: number;
-  loading: boolean;
-}
-
-type CartAction =
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ITEMS'; payload: CartItem[] }
-  | { type: 'ADD_ITEM'; payload: Product }
-  | { type: 'REMOVE_ITEM'; payload: string }
-  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
-  | { type: 'CLEAR_CART' };
-
-interface CartContextType {
-  state: CartState;
-  dispatch: React.Dispatch<CartAction>;
-  syncCart: () => Promise<void>;
-  addToCart: (product: Product) => Promise<void>;
-  removeFromCart: (productId: string) => Promise<void>;
-  updateQuantity: (productId: string, quantity: number) => Promise<void>;
-  clearCart: () => Promise<void>;
-}
-
-const CartContext = createContext<CartContextType | null>(null);
+import { useToast } from '@/hooks/useToast';
+import { CartContext, CartContextType, CartState, CartAction, CartItem } from './useCart';
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
@@ -161,7 +132,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         })) || [];
 
       dispatch({ type: 'SET_ITEMS', payload: items });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error syncing cart:', error);
       toast({
         title: "Error",
@@ -204,7 +175,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         title: "Added to cart",
         description: `${product.name} has been added to your cart`,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error adding to cart:', error);
       toast({
         title: "Error",
@@ -229,7 +200,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         .eq('product_id', productId);
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error removing from cart:', error);
       toast({
         title: "Error", 
@@ -258,7 +229,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         .eq('product_id', productId);
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating quantity:', error);
       toast({
         title: "Error",
@@ -281,7 +252,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         .eq('user_id', user.id);
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error clearing cart:', error);
       toast({
         title: "Error",
@@ -292,7 +263,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const value = {
+  const value: CartContextType = {
     state,
     dispatch,
     syncCart,
@@ -307,12 +278,4 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
 };

@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Truck, CreditCard, MapPin } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
