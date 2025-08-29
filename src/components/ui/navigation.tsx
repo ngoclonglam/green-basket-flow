@@ -1,14 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Phone, Home, Leaf } from "lucide-react";
+import { ShoppingCart, Phone, Home, Leaf, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useCart } from "@/context/CartContext";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Navigation = () => {
   const location = useLocation();
   const { state } = useCart();
+  const { user, signOut } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
+  
+  const handleSignOut = async () => {
+    await signOut();
+  };
   
   return (
     <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b sticky top-0 z-50">
@@ -56,6 +63,49 @@ export const Navigation = () => {
               )}
             </Button>
           </Link>
+
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <User className="w-4 h-4" />
+                  <span>Account</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <div className="flex flex-col space-y-1 p-2">
+                  <p className="text-sm font-medium">{user.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Welcome back!
+                  </p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Sign out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/auth">
+              <Button 
+                variant="default" 
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <User className="w-4 h-4" />
+                <span>Sign In</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

@@ -3,20 +3,48 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/useCart";
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const { state, dispatch } = useCart();
+  const { state, updateQuantity, removeFromCart } = useCart();
+  const { user } = useAuth();
   
-  const updateQuantity = (id: string, newQuantity: number) => {
-    dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity: newQuantity } });
-  };
-  
-  const removeItem = (id: string) => {
-    dispatch({ type: 'REMOVE_ITEM', payload: id });
-  };
-  
+  if (!user) {
+    return (
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <ShoppingBag className="w-24 h-24 mx-auto text-muted-foreground mb-6" />
+            <h1 className="text-3xl font-bold mb-4">Please sign in</h1>
+            <p className="text-muted-foreground mb-8">Sign in to view your cart and continue shopping!</p>
+            <Link to="/auth">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (state.loading) {
+    return (
+      <>
+        <Navigation />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-6"></div>
+            <h1 className="text-3xl font-bold mb-4">Loading your cart...</h1>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   if (state.items.length === 0) {
     return (
       <>
@@ -50,9 +78,12 @@ const Cart = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4">
                     <img 
-                      src={item.image} 
+                      src={item.image_url} 
                       alt={item.name}
                       className="w-20 h-20 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
+                      }}
                     />
                     
                     <div className="flex-1">
@@ -86,7 +117,7 @@ const Cart = () => {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="text-destructive hover:text-destructive"
                       >
                         <Trash2 className="w-4 h-4" />

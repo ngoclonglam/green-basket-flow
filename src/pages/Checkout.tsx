@@ -7,13 +7,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Truck, CreditCard, MapPin } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
-  const { state, dispatch } = useCart();
+  const { state, clearCart } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -34,7 +34,7 @@ const Checkout = () => {
       description: "Thank you for your order. You'll receive a confirmation email shortly.",
     });
     
-    dispatch({ type: 'CLEAR_CART' });
+    await clearCart();
     navigate('/');
     setIsProcessing(false);
   };
@@ -178,9 +178,12 @@ const Checkout = () => {
                   <div key={item.id} className="flex justify-between items-center">
                     <div className="flex items-center space-x-3">
                       <img 
-                        src={item.image} 
+                        src={item.image_url} 
                         alt={item.name}
                         className="w-12 h-12 object-cover rounded"
+                        onError={(e) => {
+                          e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
+                        }}
                       />
                       <div>
                         <p className="font-semibold text-sm">{item.name}</p>

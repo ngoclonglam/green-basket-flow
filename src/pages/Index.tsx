@@ -3,11 +3,17 @@ import { ProductCard } from "@/components/ProductCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Truck, Shield, Leaf, Star } from "lucide-react";
-import { products } from "@/data/products";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Truck, Shield, Leaf, Star, Filter } from "lucide-react";
+import { useProducts } from "@/hooks/useProducts";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 import heroImg from "@/assets/hero-vegetables.jpg";
 
 const Index = () => {
+  const { products, categories, loading, error } = useProducts();
+  const { user } = useAuth();
+  
   const features = [
     {
       icon: Leaf,
@@ -60,12 +66,14 @@ const Index = () => {
               delivered straight to your doorstep. Fresh, healthy, and sustainable.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow text-white">
-                Shop Now
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow text-white" asChild>
+                <a href="#products">Shop Now</a>
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary">
-                Learn More
-              </Button>
+              {!user && (
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary" asChild>
+                  <Link to="/auth">Sign Up</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -89,7 +97,7 @@ const Index = () => {
       </section>
 
       {/* Products Section */}
-      <section className="py-16">
+      <section id="products" className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">Our Fresh Selection</h2>
@@ -97,12 +105,58 @@ const Index = () => {
               Hand-picked vegetables from local organic farms, delivered fresh to your table
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground mt-4">Loading fresh products...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-destructive mb-4">Error loading products: {error}</p>
+              <Button onClick={() => window.location.reload()}>Try Again</Button>
+            </div>
+          ) : (
+            <Tabs defaultValue="all" className="w-full">
+              <div className="flex justify-center mb-8">
+                <TabsList className="grid grid-cols-6 w-full max-w-3xl">
+                  <TabsTrigger value="all" className="flex items-center gap-2">
+                    <Leaf className="w-4 h-4" />
+                    All
+                  </TabsTrigger>
+                  {categories.slice(0, 5).map((category) => (
+                    <TabsTrigger key={category.id} value={category.id} className="text-sm">
+                      {category.name.split(' ')[0]}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+
+              <TabsContent value="all">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+
+              {categories.map((category) => (
+                <TabsContent key={category.id} value={category.id}>
+                  <div className="text-center mb-8">
+                    <h3 className="text-2xl font-semibold mb-2">{category.name}</h3>
+                    <p className="text-muted-foreground">{category.description}</p>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {products
+                      .filter(product => product.category_id === category.id)
+                      .map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                      ))}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
+          )}
         </div>
       </section>
 

@@ -2,7 +2,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
-import { Product, useCart } from "@/context/CartContext";
+import { Product } from "@/hooks/useProducts";
+import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
@@ -10,24 +11,23 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const { dispatch } = useCart();
+  const { addToCart } = useCart();
   const { toast } = useToast();
   
   const handleAddToCart = () => {
-    dispatch({ type: 'ADD_ITEM', payload: product });
-    toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
-    });
+    addToCart(product);
   };
   
   return (
     <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="aspect-square overflow-hidden">
         <img 
-          src={product.image} 
+          src={product.image_url} 
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(e) => {
+            e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
+          }}
         />
       </div>
       
