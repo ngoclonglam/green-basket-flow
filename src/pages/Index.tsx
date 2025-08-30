@@ -54,7 +54,7 @@ const Index = () => {
             muted 
             loop 
             playsInline
-            className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
+            className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-85' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
           <source src={heroMp4} type="video/mp4" />
