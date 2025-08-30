@@ -1,11 +1,11 @@
-import React, { useReducer, useEffect, useCallback, ReactNode } from 'react';
+import React, { useReducer, useEffect, useCallback, ReactNode, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Product } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/useToast';
 import { CartContext, CartContextType, CartState, CartAction, CartItem } from './useCart';
 
-// Local storage key for guest cart
+// Session storage key for guest cart (will be cleared on page reload)
 const GUEST_CART_KEY = 'guest_cart';
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
@@ -107,33 +107,52 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  // Load guest cart on mount and sync with database when user logs in
+  // Handle user state changes (login/logout)
   useEffect(() => {
     if (user) {
+      // User logged in - sync with database and clear any session storage
       syncCart();
     } else {
-      // Load guest cart from localStorage
+      // No user - load guest cart from session storage
       loadGuestCart();
     }
   }, [user]);
 
-  // Save guest cart to localStorage whenever state changes
+  // Auto-save guest cart to sessionStorage
   useEffect(() => {
-    if (!user && state.items.length > 0) {
-      localStorage.setItem(GUEST_CART_KEY, JSON.stringify(state.items));
+    const navEntries = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
+
+    if (navEntries.length > 0 && navEntries[0].type === "reload") {
+      // Don't need dispatch CLEAR_CART here because already init state return to origin when render this file
+      sessionStorage.removeItem(GUEST_CART_KEY);
+      return;
     }
-  }, [state.items, user]);
+
+    if (!user && state.items.length > 0) {
+      sessionStorage.setItem(GUEST_CART_KEY, JSON.stringify(state.items));
+    }
+  }, [state.items, user, dispatch]);
+
+  const clearGuestCartStorage = () => {
+    try {
+      sessionStorage.removeItem(GUEST_CART_KEY);
+    } catch (error) {
+      console.error('Error clearing guest cart storage:', error);
+    }
+  };
 
   const loadGuestCart = () => {
+    if (user) return; // Don't load guest cart if user is logged in
+    
     try {
-      const savedCart = localStorage.getItem(GUEST_CART_KEY);
+      const savedCart = sessionStorage.getItem(GUEST_CART_KEY);
       if (savedCart) {
         const items: CartItem[] = JSON.parse(savedCart);
         dispatch({ type: 'SET_ITEMS', payload: items });
       }
     } catch (error) {
       console.error('Error loading guest cart:', error);
-      localStorage.removeItem(GUEST_CART_KEY);
+      clearGuestCartStorage();
     }
   };
 
@@ -142,6 +161,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
+
+      // Clear any existing guest cart data when syncing with database
+      clearGuestCartStorage();
 
       // Fetch cart items from database
       const { data: cartItems, error } = await supabase
@@ -311,7 +333,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (!user) {
       // Guest user - clear local cart
       dispatch({ type: 'CLEAR_CART' });
-      localStorage.removeItem(GUEST_CART_KEY);
+      clearGuestCartStorage();
       return;
     }
 
