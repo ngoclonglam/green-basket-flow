@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import { ProductsProvider } from "./hooks/products-content";
 
 const queryClient = new QueryClient();
+const baseName = import.meta.env.MODE === "production" ? "/green-basket-flow" : "";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -23,7 +24,7 @@ const App = () => (
           <ProductsProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter basename={baseName}>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/cart" element={<Cart />} />
