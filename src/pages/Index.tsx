@@ -57,7 +57,7 @@ const Index = () => {
             className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
-            <source src={heroMp4} type="video/mp4" />
+          <source src={heroMp4} type="video/mp4" />
             {/* Fallback to static image if video fails */}
           </video>
           {/* Fallback background image */}
