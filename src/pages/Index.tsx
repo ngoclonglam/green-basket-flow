@@ -8,7 +8,9 @@ import { Truck, Shield, Leaf, Star, Filter } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import heroImg from "@/assets/hero-vegetables.jpg";
+import heroMp4 from "@/assets/hero-farmer.mp4";
 
 const Index = () => {
   const { products, categories, loading, error } = useProducts();
@@ -37,6 +39,8 @@ const Index = () => {
     }
   ];
 
+  const [videoLoaded, setVideoLoaded] = useState(false);
+    
   return (
     <>
       <Navigation />
@@ -50,21 +54,21 @@ const Index = () => {
             muted 
             loop 
             playsInline
-            className="w-full h-full object-cover opacity-60"
-            poster={heroImg}
+            className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
+            onLoadedData={() => setVideoLoaded(true)}
           >
-            <source src="https://player.vimeo.com/external/406127989.sd.mp4?s=c4d39493c5d8bb83c3b1ce3e59ba0c05c94d8d7e" type="video/mp4" />
+            <source src={heroMp4} type="video/mp4" />
             {/* Fallback to static image if video fails */}
           </video>
           {/* Fallback background image */}
-          <img 
+          {/* <img 
             src={heroImg} 
             alt="Fresh organic vegetables"
             className="w-full h-full object-cover opacity-60"
             style={{ display: 'none' }}
             onError={(e) => { e.currentTarget.style.display = 'block'; }}
-          />
-          <div className="absolute inset-0 bg-black/30"></div>
+          /> */}
+          <div className="absolute inset-0 bg-black/50"></div>
         </div>
         
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
