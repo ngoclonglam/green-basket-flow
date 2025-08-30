@@ -11,6 +11,7 @@ import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import heroImg from "@/assets/hero-vegetables.jpg";
 
 const Checkout = () => {
   const { state, clearCart } = useCart();
@@ -182,7 +183,7 @@ const Checkout = () => {
                         alt={item.name}
                         className="w-12 h-12 object-cover rounded"
                         onError={(e) => {
-                          e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
+                          e.currentTarget.src = heroImg;
                         }}
                       />
                       <div>

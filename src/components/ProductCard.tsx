@@ -6,6 +6,7 @@ import { Product } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
+import heroImg from "@/assets/hero-vegetables.jpg";
 
 interface ProductCardProps {
   product: Product;
@@ -37,7 +38,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
-            e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
+            e.currentTarget.src = heroImg;
           }}
         />
       </div>
