@@ -15,7 +15,6 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
-  base: '/green-basket-flow/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
