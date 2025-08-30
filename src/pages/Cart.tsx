@@ -50,62 +50,66 @@ const Cart = () => {
   return (
     <>
       <Navigation />
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">Shopping Cart</h1>
         
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
             {state.items.map((item) => (
               <Card key={item.id}>
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     <img 
                       src={item.image_url} 
                       alt={item.name}
-                      className="w-20 h-20 object-cover rounded-lg"
+                      className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mx-auto sm:mx-0"
                       onError={(e) => {
                         e.currentTarget.src = '/src/assets/hero-vegetables.jpg';
                       }}
                     />
                     
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{item.name}</h3>
-                      <p className="text-muted-foreground">{item.description}</p>
-                      <Badge variant="secondary" className="mt-1">{item.unit}</Badge>
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="font-semibold text-base sm:text-lg">{item.name}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                      <Badge variant="secondary" className="mt-1 text-xs">{item.unit}</Badge>
                     </div>
                     
-                    <div className="flex items-center space-x-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      >
-                        <Minus className="w-4 h-4" />
-                      </Button>
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                      <div className="flex items-center space-x-3">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </Button>
+                        
+                        <span className="font-semibold w-8 text-center text-sm">{item.quantity}</span>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          disabled={!user} // Disable quantity increase for guest users
+                          title={!user ? "Sign in to change quantities" : ""}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </Button>
+                      </div>
                       
-                      <span className="font-semibold w-8 text-center">{item.quantity}</span>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        disabled={!user} // Disable quantity increase for guest users
-                        title={!user ? "Sign in to change quantities" : ""}
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="text-center sm:text-right">
+                        <div className="font-bold text-base sm:text-lg">${(item.price * item.quantity).toFixed(2)}</div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFromCart(item.id)}
+                          className="text-destructive hover:text-destructive mt-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

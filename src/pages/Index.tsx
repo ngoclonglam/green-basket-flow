@@ -46,7 +46,7 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-screen flex items-center">
+      <section className="relative overflow-hidden min-h-[70vh] sm:min-h-[80vh] lg:min-h-screen flex items-center">
         <div className="absolute inset-0">
           {/* Video Background */}
           <video 
@@ -71,25 +71,25 @@ const Index = () => {
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
         
-        <div className="relative container mx-auto px-4 py-24 lg:py-32">
+        <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-24 xl:py-32">
           <div className="max-w-2xl text-white">
-            <Badge className="mb-4 bg-primary/20 text-white border-white/20">
+            <Badge className="mb-3 sm:mb-4 bg-primary/20 text-white border-white/20 text-xs sm:text-sm">
               🌱 Farm Fresh
             </Badge>
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight">
               Fresh Vegetables
               <span className="block text-accent">Delivered Daily</span>
             </h1>
-            <p className="text-xl mb-8 text-white/90">
+            <p className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 text-white/90 leading-relaxed">
               Discover the finest selection of organic, locally-sourced vegetables 
               delivered straight to your doorstep. Fresh, healthy, and sustainable.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow text-white" asChild>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-glow text-white w-full sm:w-auto" asChild>
                 <a href="#products">Shop Now</a>
               </Button>
               {!user && (
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary" asChild>
+                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary w-full sm:w-auto" asChild>
                   <Link to="/auth">Sign Up</Link>
                 </Button>
               )}
@@ -99,15 +99,15 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-8 sm:py-12 lg:py-16 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="text-center border-0 shadow-none bg-transparent">
-                <CardContent className="pt-6">
-                  <feature.icon className="w-12 h-12 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                <CardContent className="pt-4 sm:pt-6 px-2 sm:px-4">
+                  <feature.icon className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-primary" />
+                  <h3 className="font-semibold text-base sm:text-lg mb-2">{feature.title}</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -116,11 +116,11 @@ const Index = () => {
       </section>
 
       {/* Products Section */}
-      <section id="products" className="py-16">
+      <section id="products" className="py-8 sm:py-12 lg:py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">Our Fresh Selection</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">Our Fresh Selection</h2>
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               Hand-picked vegetables from local organic farms, delivered fresh to your table
             </p>
           </div>
@@ -137,22 +137,22 @@ const Index = () => {
             </div>
           ) : (
             <Tabs defaultValue="all" className="w-full">
-              <div className="flex justify-center mb-8">
-                <TabsList className="grid grid-cols-6 w-full max-w-3xl">
-                  <TabsTrigger value="all" className="flex items-center gap-2">
-                    <Leaf className="w-4 h-4" />
-                    All
+              <div className="flex justify-center mb-6 sm:mb-8">
+                <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full max-w-5xl overflow-x-auto text-xs sm:text-sm">
+                  <TabsTrigger value="all" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                    <Leaf className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <span className="hidden xs:block">All</span>
                   </TabsTrigger>
                   {categories.slice(0, 5).map((category) => (
-                    <TabsTrigger key={category.id} value={category.id} className="text-sm">
-                      {category.name.split(' ')[0]}
+                    <TabsTrigger key={category.id} value={category.id} className="px-2 sm:px-4 whitespace-nowrap">
+                      <span className="truncate">{category.name.split(' ')[0]}</span>
                     </TabsTrigger>
                   ))}
                 </TabsList>
               </div>
 
               <TabsContent value="all">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {products.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
@@ -161,11 +161,11 @@ const Index = () => {
 
               {categories.map((category) => (
                 <TabsContent key={category.id} value={category.id}>
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-semibold mb-2">{category.name}</h3>
-                    <p className="text-muted-foreground">{category.description}</p>
+                  <div className="text-center mb-6 sm:mb-8">
+                    <h3 className="text-xl sm:text-2xl font-semibold mb-2">{category.name}</h3>
+                    <p className="text-sm sm:text-base text-muted-foreground">{category.description}</p>
                   </div>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                     {products
                       .filter(product => product.category_id === category.id)
                       .map((product) => (

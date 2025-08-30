@@ -19,32 +19,32 @@ export const Navigation = () => {
   
   return (
     <nav className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b sticky top-0 z-50">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2 text-xl font-bold text-primary">
-          <Leaf className="w-8 h-8" />
-          <span>FreshMarket</span>
+      <div className="container mx-auto px-2 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
+        <Link to="/" className="flex items-center space-x-1 sm:space-x-2 text-lg sm:text-xl font-bold text-primary">
+          <Leaf className="w-6 h-6 sm:w-8 sm:h-8" />
+          <span className="hidden xs:block">FreshMarket</span>
         </Link>
         
-        <div className="flex items-center space-x-6">
-          <Link to="/">
+        <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
+          <Link to="/" className="hidden sm:block">
             <Button 
               variant={isActive('/') ? 'default' : 'ghost'} 
               size="sm"
               className="flex items-center space-x-2"
             >
               <Home className="w-4 h-4" />
-              <span>Home</span>
+              <span className="hidden md:block">Home</span>
             </Button>
           </Link>
           
-          <Link to="/contact">
+          <Link to="/contact" className="hidden sm:block">
             <Button 
               variant={isActive('/contact') ? 'default' : 'ghost'} 
               size="sm"
               className="flex items-center space-x-2"
             >
               <Phone className="w-4 h-4" />
-              <span>Contact</span>
+              <span className="hidden md:block">Contact</span>
             </Button>
           </Link>
           
@@ -52,12 +52,12 @@ export const Navigation = () => {
             <Button 
               variant={isActive('/cart') ? 'default' : 'ghost'} 
               size="sm"
-              className="relative flex items-center space-x-2"
+              className="relative flex items-center space-x-1 sm:space-x-2"
             >
               <ShoppingCart className="w-4 h-4" />
-              <span>Cart</span>
+              <span className="hidden sm:block">Cart</span>
               {state.items.length > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground min-w-[20px] h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 rounded-full p-0 flex items-center justify-center text-xs">
                   {state.items.reduce((sum, item) => sum + item.quantity, 0)}
                 </Badge>
               )}
@@ -70,15 +70,15 @@ export const Navigation = () => {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-1 sm:space-x-2"
                 >
                   <User className="w-4 h-4" />
-                  <span>Account</span>
+                  <span className="hidden sm:block">Account</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="flex flex-col space-y-1 p-2">
-                  <p className="text-sm font-medium">{user.email}</p>
+                  <p className="text-sm font-medium truncate">{user.email}</p>
                   <p className="text-xs text-muted-foreground">
                     Welcome back!
                   </p>
@@ -99,10 +99,10 @@ export const Navigation = () => {
               <Button 
                 variant="default" 
                 size="sm"
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm px-2 sm:px-3"
               >
                 <User className="w-4 h-4" />
-                <span>Sign In</span>
+                <span className="hidden xs:block">Sign In</span>
               </Button>
             </Link>
           )}
