@@ -42,14 +42,29 @@ const Index = () => {
       <Navigation />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-screen flex items-center">
         <div className="absolute inset-0">
+          {/* Video Background */}
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline
+            className="w-full h-full object-cover opacity-60"
+            poster={heroImg}
+          >
+            <source src="https://player.vimeo.com/external/406127989.sd.mp4?s=c4d39493c5d8bb83c3b1ce3e59ba0c05c94d8d7e" type="video/mp4" />
+            {/* Fallback to static image if video fails */}
+          </video>
+          {/* Fallback background image */}
           <img 
             src={heroImg} 
             alt="Fresh organic vegetables"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-60"
+            style={{ display: 'none' }}
+            onError={(e) => { e.currentTarget.style.display = 'block'; }}
           />
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-black/30"></div>
         </div>
         
         <div className="relative container mx-auto px-4 py-24 lg:py-32">

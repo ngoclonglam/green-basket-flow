@@ -46,8 +46,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case 'ADD_ITEM_GUEST': {
       const existingItem = state.items.find(item => item.id === action.payload.id);
       
-      // For guests, don't increase quantity if item already exists
+      // For guests, allow adding different items but limit quantity to 1 each
       if (existingItem) {
+        // Item already exists, don't add again but return current state
         return state;
       }
       
@@ -193,6 +194,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Item already in cart",
           description: "Sign in to add multiple quantities",
+          variant: "info"
         });
         return;
       }
@@ -202,6 +204,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       toast({
         title: "Added to cart",
         description: `${product.name} has been added to your cart`,
+        variant: "success"
       });
       return;
     }
@@ -226,6 +229,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       toast({
         title: "Added to cart",
         description: `${product.name} has been added to your cart`,
+        variant: "success"
       });
     } catch (error: unknown) {
       console.error('Error adding to cart:', error);
@@ -276,6 +280,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         toast({
           title: "Sign in to change quantities",
           description: "Guests can only have 1 of each item",
+          variant: "info"
         });
       }
       return;
