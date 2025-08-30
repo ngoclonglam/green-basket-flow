@@ -20,7 +20,6 @@ Welcome to **Green Basket Flow** — a modern, full-stack web application design
 - 🥬 Real-time inventory for locally-sourced, organic vegetables
 - ⚡ Lightning-fast frontend with instant preview and hot reload
 - 📱 Responsive, mobile-first design
-- 🛠️ Easily editable via [Lovable](https://lovable.dev/projects/29a1ef75-d09f-4772-8f23-0e5dbe3b9329), your IDE, or Codespaces
 
 ---
 
@@ -34,6 +33,7 @@ This project is built with:
 - [shadcn/ui](https://ui.shadcn.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Supabase](https://supabase.com/) (for database, authentication, and storage)
+- [Lovable Dev](https://lovable.dev/) (for UI)
 
 ---
 
