@@ -1,73 +1,85 @@
-# Welcome to your Lovable project
+# Green Basket Flow
 
-## Project info
+Welcome to **Green Basket Flow** — a modern, full-stack web application designed for seamless organic grocery shopping. With a fresh, interactive interface and robust backend, Green Basket Flow empowers local producers and consumers to connect in a digital marketplace for premium, farm-fresh produce.
 
-**URL**: https://lovable.dev/projects/29a1ef75-d09f-4772-8f23-0e5dbe3b9329
+---
 
-## How can I edit this code?
+## 🌱 Project Overview
 
-There are several ways of editing your application.
+**Green Basket Flow** is an e-commerce platform focused on delivering organic vegetables and groceries. It provides a smooth experience for users to browse, shop, and check out with same-day delivery. The platform is built to support both authenticated users and guests, with persistent and session-based carts, and integrates with modern cloud and database solutions for scalability.
 
-**Use Lovable**
+- **Repository**: [ngoclonglam/green-basket-flow](https://github.com/ngoclonglam/green-basket-flow)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/29a1ef75-d09f-4772-8f23-0e5dbe3b9329) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## ✨ Features
 
-**Use your preferred IDE**
+- 🛒 Modern shopping cart with session and persistent modes
+- 👤 Authenticated user support with profile management
+- 🚚 Same-day delivery options
+- 🥬 Real-time inventory for locally-sourced, organic vegetables
+- ⚡ Lightning-fast frontend with instant preview and hot reload
+- 📱 Responsive, mobile-first design
+- 🛠️ Easily editable via [Lovable](https://lovable.dev/projects/29a1ef75-d09f-4772-8f23-0e5dbe3b9329), your IDE, or Codespaces
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
+## 🛠️ Tech Stack
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- [Vite](https://vitejs.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [React](https://react.dev/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Supabase](https://supabase.com/) (for database, authentication, and storage)
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/29a1ef75-d09f-4772-8f23-0e5dbe3b9329) and click on Share -> Publish.
+## 🚀 Getting Started
 
-## Can I connect a custom domain to my Lovable project?
+### Clone & Run Locally
 
-Yes, you can!
+```sh
+git clone https://github.com/ngoclonglam/green-basket-flow.git
+cd green-basket-flow
+npm install
+npm run dev
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Edit with GitHub Codespaces
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Click the **Code** button on the GitHub repo and launch a Codespace.
+- Edit files and commit your changes directly from the cloud IDE.
+
+---
+
+## 🐳 Docker Support
+
+Build and run with Docker:
+
+```sh
+docker compose up --build
+```
+
+Your app will be available at [http://localhost:8080](http://localhost:8080).
+
+For cloud deployment and multi-architecture builds, see [`README.Docker.md`](./README.Docker.md).
+
+## 📖 Learn More
+
+- [Supabase Documentation](https://supabase.com/docs)
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs)
+
+---
+
+## 🧑‍💻 Contributing
+
+Pull requests and contributions are welcome. Feel free to open issues for feature requests or bug reports!
+
+---
+
+## © 2025 ngoclonglam
+
+Premium organic groceries. Delivered fresh, daily.

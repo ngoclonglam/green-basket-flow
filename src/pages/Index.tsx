@@ -52,9 +52,10 @@ const Index = () => {
           <video 
             autoPlay 
             muted 
-            loop 
+            loop
             playsInline
-            className={`w-full h-full object-cover transition-opacity duration-1000 ${videoLoaded ? 'opacity-85' : 'opacity-0'}`}
+            preload="metadata"
+            className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
           <source src={heroMp4} type="video/mp4" />
@@ -71,7 +72,7 @@ const Index = () => {
           <div className="absolute inset-0 bg-black/50"></div>
         </div>
         
-        <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-24 xl:py-32">
+        <div className="relative container mx-auto px-4 py-12 sm:py-16 lg:py-24 xl:py-32 slide-text animate-fadeInText">
           <div className="max-w-2xl text-white">
             <Badge className="mb-3 sm:mb-4 bg-primary/20 text-white border-white/20 text-xs sm:text-sm">
               🌱 Farm Fresh
@@ -89,7 +90,7 @@ const Index = () => {
                 <a href="#products">Shop Now</a>
               </Button>
               {!user && (
-                <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary w-full sm:w-auto" asChild>
+                <Button variant="none" size="lg" className="border-white text-white hover:bg-white hover:text-primary w-full sm:w-auto" asChild>
                   <Link to="/auth">Sign Up</Link>
                 </Button>
               )}
