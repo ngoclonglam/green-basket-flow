@@ -9,8 +9,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import heroImg from "@/assets/hero-vegetables.jpg";
-import heroMp4 from "@/assets/hero-farmer.mp4";
+import { PUBLIC_ASSETS } from "@/constants/paths";
 
 const Index = () => {
   const { products, categories, loading, error } = useProducts();
@@ -58,7 +57,7 @@ const Index = () => {
             className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
-          <source src={heroMp4} type="video/mp4" />
+          <source src={PUBLIC_ASSETS.HERO_VIDEO} type="video/mp4" />
             {/* Fallback to static image if video fails */}
           </video>
           {/* Fallback background image */}

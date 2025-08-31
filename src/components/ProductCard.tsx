@@ -6,7 +6,7 @@ import { Product } from "@/hooks/useProducts";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
-import heroImg from "@/assets/hero-vegetables.jpg";
+import { PUBLIC_ASSETS } from "@/constants/paths";
 
 interface ProductCardProps {
   product: Product;
@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isAnimating, setIsAnimating] = useState(false);
-  const imageUrlPrefix = import.meta.env.BASE_URL;
+  const imageUrlPrefix = import.meta.env.PROD ? '/green-basket-flow/' : '';
 
   const handleAddToCart = async () => {
     // Trigger animation
@@ -39,7 +39,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
-            e.currentTarget.src = heroImg;
+            e.currentTarget.src = PUBLIC_ASSETS.HERO_IMAGE;
           }}
         />
       </div>

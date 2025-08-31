@@ -6,7 +6,7 @@ import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
-import heroImg from "@/assets/hero-vegetables.jpg";
+import { PUBLIC_ASSETS } from "@/constants/paths";
 
 const Cart = () => {
   const { state, updateQuantity, removeFromCart } = useCart();
@@ -65,7 +65,7 @@ const Cart = () => {
                       alt={item.name}
                       className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg mx-auto sm:mx-0"
                       onError={(e) => {
-                        e.currentTarget.src = heroImg;
+                        e.currentTarget.src = PUBLIC_ASSETS.HERO_IMAGE;
                       }}
                     />
                     
