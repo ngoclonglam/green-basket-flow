@@ -16,7 +16,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isAnimating, setIsAnimating] = useState(false);
-  
+  const imageUrlPrefix = import.meta.env.PROD ? 'green-basket-flow' : 'src';
+
   const handleAddToCart = async () => {
     // Trigger animation
     setIsAnimating(true);
@@ -34,7 +35,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     <Card className="group overflow-hidden transition-all duration-500 hover:shadow-lg hover:-translate-y-1 sm:hover:-translate-y-3">
       <div className="aspect-square overflow-hidden">
         <img 
-          src={product.image_url} 
+          src={`${imageUrlPrefix}${product.image_url}`} 
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {
