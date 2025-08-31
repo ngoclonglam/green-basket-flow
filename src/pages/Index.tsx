@@ -12,12 +12,6 @@ import { useState } from "react";
 import heroImg from "@/assets/hero-vegetables.jpg";
 import heroMp4 from "@/assets/hero-farmer.mp4";
 
-// Get proper asset URLs for production
-const getAssetUrl = (path: string) => {
-  const base = import.meta.env.MODE === 'production' ? '/green-basket-flow' : '';
-  return `${base}${path}`;
-};
-
 const Index = () => {
   const { products, categories, loading, error } = useProducts();
   const { user } = useAuth();
@@ -64,7 +58,7 @@ const Index = () => {
             className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
-          <source src={getAssetUrl(heroMp4)} type="video/mp4" />
+          <source src={heroMp4} type="video/mp4" />
             {/* Fallback to static image if video fails */}
           </video>
           {/* Fallback background image */}
