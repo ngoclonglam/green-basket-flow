@@ -9,6 +9,10 @@ export interface Product {
   unit: string;
   category_id: string;
   in_stock: boolean;
+  stock_quantity?: number;
+  is_featured?: boolean;
+  is_bestseller?: boolean;
+  discount_percentage?: number;
   category?: {
     name: string;
     description: string;

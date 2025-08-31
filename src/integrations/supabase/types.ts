@@ -78,11 +78,15 @@ export type Database = {
           category_id: string | null
           created_at: string
           description: string | null
+          discount_percentage: number | null
           id: string
           image_url: string | null
           in_stock: boolean | null
+          is_bestseller: boolean | null
+          is_featured: boolean | null
           name: string
           price: number
+          stock_quantity: number | null
           unit: string
           updated_at: string
         }
@@ -90,11 +94,15 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          discount_percentage?: number | null
           id?: string
           image_url?: string | null
           in_stock?: boolean | null
+          is_bestseller?: boolean | null
+          is_featured?: boolean | null
           name: string
           price: number
+          stock_quantity?: number | null
           unit?: string
           updated_at?: string
         }
@@ -102,11 +110,15 @@ export type Database = {
           category_id?: string | null
           created_at?: string
           description?: string | null
+          discount_percentage?: number | null
           id?: string
           image_url?: string | null
           in_stock?: boolean | null
+          is_bestseller?: boolean | null
+          is_featured?: boolean | null
           name?: string
           price?: number
+          stock_quantity?: number | null
           unit?: string
           updated_at?: string
         }

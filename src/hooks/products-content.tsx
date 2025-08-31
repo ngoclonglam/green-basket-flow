@@ -32,6 +32,8 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
           category:categories(name, description)
         `)
         .eq('in_stock', true)
+        .order('is_featured', { ascending: false })
+        .order('is_bestseller', { ascending: false })
         .order('name');
 
       if (productsError) throw productsError;

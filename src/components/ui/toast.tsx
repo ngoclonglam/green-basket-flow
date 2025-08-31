@@ -23,14 +23,14 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-md border p-6 pr-8 shadow-lg backdrop-blur-md transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg backdrop-blur-md bg-background/80 border border-white/20 p-6 pr-8 shadow-xl transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full",
   {
     variants: {
       variant: {
-        default: "border-border/50 bg-background/90 text-foreground",
-        destructive: "border-red-500/50 bg-red-500/90 text-white",
-        success: "border-green-500/50 bg-green-500/90 text-white",
-        info: "border-blue-500/50 bg-blue-500/90 text-white",
+        default: "bg-background/90 text-foreground border-border/50",
+        destructive: "bg-red-500/20 border-red-500/30 text-red-900 dark:text-red-50 backdrop-blur-md",
+        success: "bg-green-500/20 border-green-500/30 text-green-900 dark:text-green-50 backdrop-blur-md",
+        info: "bg-blue-500/20 border-blue-500/30 text-blue-900 dark:text-blue-50 backdrop-blur-md",
       },
     },
     defaultVariants: {
