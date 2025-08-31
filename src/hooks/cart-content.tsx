@@ -19,39 +19,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
     
     case 'ADD_ITEM': {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      
-      if (existingItem) {
-        // For guests, don't increase quantity - they can only have 1 of each item
-        const updatedItems = state.items.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-        return {
-          ...state,
-          items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-        };
-      }
-      
-      const newItems = [...state.items, { ...action.payload, quantity: 1 }];
-      return {
-        ...state,
-        items: newItems,
-        total: newItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-      };
-    }
-    
-    case 'ADD_ITEM_GUEST': {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      
-      // For guests, allow adding different items but limit quantity to 1 each
-      if (existingItem) {
-        // Item already exists, don't add again but return current state
-        return state;
-      }
-      
       const newItems = [...state.items, { ...action.payload, quantity: 1 }];
       return {
         ...state,
@@ -208,33 +175,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addToCart = async (product: Product) => {
-    if (!user) {
-      // Guest user - add to local cart
-      const existingItem = state.items.find(item => item.id === product.id);
-      
-      if (existingItem) {
+    try {
+      // Guest just add temporary item
+      if (!user) {
+        dispatch({ type: 'ADD_ITEM', payload: product });
+        
         toast({
-          title: "Item already in cart",
-          description: "Sign in to add multiple quantities",
-          variant: "info"
+          title: "Added to cart",
+          description: `${product.name} has been added to your cart`,
+          variant: "success"
         });
         return;
       }
       
-      dispatch({ type: 'ADD_ITEM_GUEST', payload: product });
-      
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart`,
-        variant: "success"
-      });
-      return;
-    }
-
-    try {
       // Update local state immediately for better UX
       dispatch({ type: 'ADD_ITEM', payload: product });
-
+    
       // Sync with database
       const { error } = await supabase
         .from('cart_items')

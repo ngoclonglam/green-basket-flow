@@ -82,4 +82,4 @@ Pull requests and contributions are welcome. Feel free to open issues for featur
 
 ## © 2025 ngoclonglam
 
-Premium organic groceries. Delivered fresh, daily.
+Premium organic groceries. Delivered fresh, dail
