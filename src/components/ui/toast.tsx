@@ -5,6 +5,36 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// SVG Filter for Liquid Glass Effect
+const LiquidGlassFilter = () => (
+  <svg className="hidden">
+    <defs>
+      <filter
+        id="liquid-glass-blur"
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        filterUnits="objectBoundingBox"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.003 0.007"
+          numOctaves="1"
+          result="turbulence"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="turbulence"
+          scale="8"
+          xChannelSelector="R"
+          yChannelSelector="G"
+        />
+      </filter>
+    </defs>
+  </svg>
+)
+
 const ToastProvider = ToastPrimitives.Provider
 
 const ToastViewport = React.forwardRef<
@@ -45,11 +75,72 @@ const Toast = React.forwardRef<
     VariantProps<typeof toastVariants>
 >(({ className, variant, ...props }, ref) => {
   return (
-    <ToastPrimitives.Root
-      ref={ref}
-      className={cn(toastVariants({ variant }), className)}
-      {...props}
-    />
+    <>
+      <LiquidGlassFilter />
+      <ToastPrimitives.Root
+        ref={ref}
+        className={cn("relative", className)}
+        {...props}
+      >
+        {/* Bend Layer - Backdrop blur with distortion */}
+        <div 
+          className="absolute inset-0 backdrop-blur-xl rounded-2xl z-0" 
+          style={{ 
+            filter: 'url(#liquid-glass-blur)',
+            background: variant === 'destructive' 
+              ? 'rgba(127, 29, 29, 0.8)' 
+              : variant === 'success'
+              ? 'rgba(20, 83, 45, 0.8)'
+              : variant === 'info'
+              ? 'rgba(30, 58, 138, 0.8)'
+              : 'rgba(0, 0, 0, 0.7)'
+          }} 
+        />
+        
+        {/* Face Layer - Main glow effect */}
+        <div 
+          className="absolute inset-0 rounded-2xl z-10"
+          style={{
+            boxShadow: variant === 'destructive'
+              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(239, 68, 68, 0.15)'
+              : variant === 'success'
+              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(34, 197, 94, 0.15)'
+              : variant === 'info'
+              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(59, 130, 246, 0.15)'
+              : '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(255, 255, 255, 0.1)'
+          }}
+        />
+        
+        {/* Edge Layer - Inner highlights */}
+        <div 
+          className="absolute inset-0 rounded-2xl z-20"
+          style={{
+            boxShadow: variant === 'destructive'
+              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
+              : variant === 'success'
+              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
+              : variant === 'info'
+              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
+              : 'inset 3px 3px 3px 0 rgba(255, 255, 255, 0.35), inset -3px -3px 3px 0 rgba(255, 255, 255, 0.35)',
+            border: variant === 'destructive'
+              ? '1px solid rgba(239, 68, 68, 0.2)'
+              : variant === 'success'
+              ? '1px solid rgba(34, 197, 94, 0.2)'
+              : variant === 'info'
+              ? '1px solid rgba(59, 130, 246, 0.2)'
+              : '1px solid rgba(255, 255, 255, 0.1)'
+          }}
+        />
+        
+        {/* Content */}
+        <div className={cn(
+          toastVariants({ variant }), 
+          "relative z-30 bg-transparent border-transparent shadow-none"
+        )}>
+          {props.children}
+        </div>
+      </ToastPrimitives.Root>
+    </>
   )
 })
 Toast.displayName = ToastPrimitives.Root.displayName
