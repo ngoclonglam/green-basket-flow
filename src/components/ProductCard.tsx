@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isAnimating, setIsAnimating] = useState(false);
-  const imageUrlPrefix = import.meta.env.PROD ? '' : 'src';
+  const imageUrlPrefix = import.meta.env.BASE_URL;
 
   const handleAddToCart = async () => {
     // Trigger animation
