@@ -5,31 +5,50 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-// SVG Filter for Liquid Glass Effect
+// Enhanced SVG Filter for Liquid Glass Effect
 const LiquidGlassFilter = () => (
   <svg className="hidden">
     <defs>
       <filter
         id="liquid-glass-blur"
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
+        x="-20%"
+        y="-20%"
+        width="140%"
+        height="140%"
         filterUnits="objectBoundingBox"
       >
         <feTurbulence
           type="fractalNoise"
-          baseFrequency="0.003 0.007"
-          numOctaves="1"
+          baseFrequency="0.004 0.009"
+          numOctaves="2"
           result="turbulence"
+          seed="5"
         />
         <feDisplacementMap
           in="SourceGraphic"
           in2="turbulence"
-          scale="8"
+          scale="12"
           xChannelSelector="R"
           yChannelSelector="G"
+          result="displacement"
         />
+        <feGaussianBlur
+          in="displacement"
+          stdDeviation="0.8"
+        />
+      </filter>
+      <filter
+        id="glass-glow"
+        x="-50%"
+        y="-50%"
+        width="200%"
+        height="200%"
+      >
+        <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+        <feMerge> 
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
   </svg>
@@ -44,7 +63,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-4 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:top-4 sm:right-4 sm:left-auto sm:w-auto sm:max-w-sm md:max-w-md space-y-2 sm:space-y-3",
+      "fixed bottom-0 right-0 z-[100] flex max-h-screen w-full flex-col p-4 md:max-w-[420px]",
       className
     )}
     {...props}
@@ -53,14 +72,14 @@ const ToastViewport = React.forwardRef<
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName
 
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-3 overflow-hidden rounded-2xl backdrop-blur-xl bg-black/70 dark:bg-black/80 border border-white/10 p-4 pr-12 shadow-2xl transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full max-w-sm sm:max-w-md",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-2xl p-6 pr-8 transition-all data-[swipe=cancel]:translate-y-0 data-[swipe=end]:translate-y-[var(--radix-toast-swipe-end-y)] data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-bottom-full data-[state=open]:slide-in-from-bottom-full",
   {
     variants: {
       variant: {
-        default: "bg-black/70 dark:bg-black/80 text-white border-white/10",
-        destructive: "bg-red-900/80 dark:bg-red-950/90 border-red-500/20 text-red-50",
-        success: "bg-green-900/80 dark:bg-green-950/90 border-green-500/20 text-green-50",
-        info: "bg-blue-900/80 dark:bg-blue-950/90 border-blue-500/20 text-blue-50",
+        default: "text-white",
+        destructive: "text-white", 
+        success: "text-white",
+        info: "text-white",
       },
     },
     defaultVariants: {
@@ -82,53 +101,89 @@ const Toast = React.forwardRef<
         className={cn("relative", className)}
         {...props}
       >
-        {/* Bend Layer - Backdrop blur with distortion */}
+        {/* Bend Layer - Liquid distortion backdrop */}
         <div 
-          className="absolute inset-0 backdrop-blur-xl rounded-2xl z-0" 
+          className="absolute inset-0 rounded-2xl backdrop-blur-xl z-0"
           style={{ 
             filter: 'url(#liquid-glass-blur)',
             background: variant === 'destructive' 
-              ? 'rgba(127, 29, 29, 0.8)' 
+              ? `linear-gradient(135deg, 
+                  hsla(var(--destructive), 0.85) 0%, 
+                  hsla(var(--destructive), 0.7) 50%, 
+                  hsla(var(--destructive), 0.9) 100%)`
               : variant === 'success'
-              ? 'rgba(20, 83, 45, 0.8)'
+              ? `linear-gradient(135deg, 
+                  hsl(142 76% 36% / 0.85) 0%, 
+                  hsl(142 65% 45% / 0.7) 50%, 
+                  hsl(142 76% 36% / 0.9) 100%)`
               : variant === 'info'
-              ? 'rgba(30, 58, 138, 0.8)'
-              : 'rgba(0, 0, 0, 0.7)'
-          }} 
-        />
-        
-        {/* Face Layer - Main glow effect */}
-        <div 
-          className="absolute inset-0 rounded-2xl z-10"
-          style={{
-            boxShadow: variant === 'destructive'
-              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(239, 68, 68, 0.15)'
-              : variant === 'success'
-              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(34, 197, 94, 0.15)'
-              : variant === 'info'
-              ? '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(59, 130, 246, 0.15)'
-              : '0 4px 4px rgba(0, 0, 0, 0.15), 0 0 12px rgba(0, 0, 0, 0.08), 0 0 24px rgba(255, 255, 255, 0.1)'
+              ? `linear-gradient(135deg, 
+                  hsl(217 91% 60% / 0.85) 0%, 
+                  hsl(217 81% 70% / 0.7) 50%, 
+                  hsl(217 91% 60% / 0.9) 100%)`
+              : `linear-gradient(135deg, 
+                  hsla(var(--muted-foreground), 0.85) 0%, 
+                  hsla(var(--muted-foreground), 0.7) 50%, 
+                  hsla(var(--muted-foreground), 0.9) 100%)`
           }}
         />
         
-        {/* Edge Layer - Inner highlights */}
+        {/* Face Layer - Enhanced glow and depth */}
         <div 
-          className="absolute inset-0 rounded-2xl z-20"
+          className="absolute inset-0 rounded-2xl z-10"
           style={{
+            filter: 'url(#glass-glow)',
+            background: variant === 'destructive'
+              ? `radial-gradient(circle at 30% 20%, 
+                  hsla(var(--destructive), 0.3) 0%, 
+                  transparent 60%)`
+              : variant === 'success'
+              ? `radial-gradient(circle at 30% 20%, 
+                  hsl(142 76% 50% / 0.3) 0%, 
+                  transparent 60%)`
+              : variant === 'info'
+              ? `radial-gradient(circle at 30% 20%, 
+                  hsl(217 91% 70% / 0.3) 0%, 
+                  transparent 60%)`
+              : `radial-gradient(circle at 30% 20%, 
+                  hsla(var(--foreground), 0.2) 0%, 
+                  transparent 60%)`,
             boxShadow: variant === 'destructive'
-              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
+              ? `0 8px 32px -8px hsla(var(--destructive), 0.4),
+                 0 0 0 1px hsla(var(--destructive), 0.15),
+                 inset 0 1px 0 hsla(var(--destructive-foreground), 0.1)`
               : variant === 'success'
-              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
+              ? `0 8px 32px -8px hsl(142 76% 36% / 0.4),
+                 0 0 0 1px hsl(142 76% 36% / 0.15),
+                 inset 0 1px 0 hsl(0 0% 100% / 0.1)`
               : variant === 'info'
-              ? 'inset 2px 2px 2px 0 rgba(255, 255, 255, 0.2), inset -2px -2px 2px 0 rgba(255, 255, 255, 0.2)'
-              : 'inset 3px 3px 3px 0 rgba(255, 255, 255, 0.35), inset -3px -3px 3px 0 rgba(255, 255, 255, 0.35)',
+              ? `0 8px 32px -8px hsl(217 91% 60% / 0.4),
+                 0 0 0 1px hsl(217 91% 60% / 0.15),
+                 inset 0 1px 0 hsl(0 0% 100% / 0.1)`
+              : `0 8px 32px -8px hsla(var(--muted-foreground), 0.3),
+                 0 0 0 1px hsla(var(--border), 0.5),
+                 inset 0 1px 0 hsla(var(--foreground), 0.05)`
+          }}
+        />
+        
+        {/* Edge Layer - Refined glass highlights */}
+        <div 
+          className="absolute inset-0 rounded-2xl z-20 pointer-events-none"
+          style={{
+            background: `linear-gradient(145deg, 
+              hsla(var(--background), 0.15) 0%, 
+              transparent 25%, 
+              transparent 75%, 
+              hsla(var(--background), 0.1) 100%)`,
+            boxShadow: `inset 0 1px 1px hsla(var(--background), 0.25),
+                        inset 0 -1px 1px hsla(var(--background), 0.1)`,
             border: variant === 'destructive'
-              ? '1px solid rgba(239, 68, 68, 0.2)'
+              ? `1px solid hsla(var(--destructive), 0.3)`
               : variant === 'success'
-              ? '1px solid rgba(34, 197, 94, 0.2)'
+              ? `1px solid hsl(142 76% 36% / 0.3)`
               : variant === 'info'
-              ? '1px solid rgba(59, 130, 246, 0.2)'
-              : '1px solid rgba(255, 255, 255, 0.1)'
+              ? `1px solid hsl(217 91% 60% / 0.3)`
+              : `1px solid hsla(var(--border), 0.4)`
           }}
         />
         
