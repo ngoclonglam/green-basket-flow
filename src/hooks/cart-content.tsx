@@ -19,7 +19,21 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     }
     
     case 'ADD_ITEM': {
-      const newItems = [...state.items, { ...action.payload, quantity: 1 }];
+      const existingItemIndex = state.items.findIndex(item => item.id === action.payload.id);
+      let newItems;
+      
+      if (existingItemIndex !== -1) {
+        // Item exists, increment quantity
+        newItems = state.items.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        // New item, add to cart
+        newItems = [...state.items, { ...action.payload, quantity: 1 }];
+      }
+      
       return {
         ...state,
         items: newItems,
