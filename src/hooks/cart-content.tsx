@@ -268,12 +268,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       // Guest users can only remove items, not change quantities
       if (quantity <= 0) {
         removeFromCart(productId);
-      } else {
-        toast({
-          title: "Sign in to change quantities",
-          description: "Guests can only have 1 of each item",
-          variant: "info"
-        });
       }
       return;
     }
