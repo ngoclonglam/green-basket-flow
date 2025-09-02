@@ -164,6 +164,9 @@ function toast({ dismissTime, ...props }: Toast) {
     },
   })
 
+  // Auto-dismiss the toast after the specified time
+  addToRemoveQueue(id, dismissTime)
+
   return {
     id: id,
     dismiss,
