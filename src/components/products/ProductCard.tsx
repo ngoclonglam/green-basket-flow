@@ -15,7 +15,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { toast } = useToast();
   const [isAnimating, setIsAnimating] = useState(false);
-  const imageUrlPrefix = import.meta.env.PROD ? '/green-basket-flow/' : '';
+  const env = import.meta.env;
+  const imageUrlPrefix = env.VITE_BASE_URL === '/' ? '' : `${env.VITE_BASE_URL}/assets/`;
 
   const handleAddToCart = async () => {
     // Check stock availability
