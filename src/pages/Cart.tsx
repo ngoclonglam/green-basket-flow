@@ -135,7 +135,7 @@ const Cart = () => {
               <CardContent className="space-y-4">
                 {!user && (
                   <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
-                    Shopping as guest - Sign in to save your cart and access quantity controls
+                    Shopping as guest - <Link to="/auth" className="text-primary dark:text-primary-glow font-bold hover:underline">Sign in</Link> to save your cart
                   </div>
                 )}
                 {/* Show total savings if there are discounts */}
