@@ -14,7 +14,6 @@ import { ProductsProvider } from "./hooks/products";
 
 const queryClient = new QueryClient();
 const baseName = import.meta.env.VITE_BASE_URL || "/";
-debugger;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
