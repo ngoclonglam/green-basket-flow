@@ -32,8 +32,15 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     // Trigger animation
     setIsAnimating(true);
     
+    // Create product with discounted price for cart
+    const productForCart = {
+      ...product,
+      price: getDiscountedPrice(), // Use discounted price
+      original_price: product.price // Store original price for display
+    };
+    
     // Add to cart
-    await addToCart(product);
+    await addToCart(productForCart);
     
     // Reset animation after it completes
     setTimeout(() => {

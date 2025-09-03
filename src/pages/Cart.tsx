@@ -98,7 +98,19 @@ const Cart = () => {
                       </div>
                       
                       <div className="text-center sm:text-right">
-                        <div className="font-bold text-base sm:text-lg">${(item.price * item.quantity).toFixed(2)}</div>
+                        <div className="space-y-1">
+                          {item.original_price && item.original_price > item.price ? (
+                            <>
+                              <div className="font-bold text-base sm:text-lg text-primary">${(item.price * item.quantity).toFixed(2)}</div>
+                              <div className="text-sm text-muted-foreground line-through">${(item.original_price * item.quantity).toFixed(2)}</div>
+                              <Badge variant="destructive" className="text-xs">
+                                {Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF
+                              </Badge>
+                            </>
+                          ) : (
+                            <div className="font-bold text-base sm:text-lg">${(item.price * item.quantity).toFixed(2)}</div>
+                          )}
+                        </div>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -124,6 +136,22 @@ const Cart = () => {
                 {!user && (
                   <div className="bg-muted p-3 rounded-lg text-sm text-muted-foreground">
                     Shopping as guest - Sign in to save your cart and access quantity controls
+                  </div>
+                )}
+                {/* Show total savings if there are discounts */}
+                {state.items.some(item => item.original_price && item.original_price > item.price) && (
+                  <div className="bg-green-50 dark:bg-green-950 p-3 rounded-lg">
+                    <div className="flex justify-between text-green-700 dark:text-green-300">
+                      <span className="font-medium">Total Savings</span>
+                      <span className="font-bold">
+                        ${state.items.reduce((savings, item) => {
+                          if (item.original_price && item.original_price > item.price) {
+                            return savings + ((item.original_price - item.price) * item.quantity);
+                          }
+                          return savings;
+                        }, 0).toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 )}
                 <div className="flex justify-between">

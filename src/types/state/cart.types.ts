@@ -4,6 +4,7 @@ import React from 'react';
 export interface CartItem extends Omit<Product, 'in_stock'> {
   quantity: number;
   in_stock?: boolean;
+  original_price?: number; // Store original price for discount display
 }
 
 export interface CartState {
