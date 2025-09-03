@@ -3,8 +3,7 @@ import { ShoppingCart, Phone, Home, Leaf, User, LogOut, Settings } from "lucide-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useCart } from "@/hooks/useCart";
-import { useAuth } from "@/hooks/useAuth";
+import { useCart, useAuth } from "@/hooks";
 
 export const Navigation = () => {
   const location = useLocation();

@@ -3,8 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
-import { useCart } from "@/hooks/useCart";
-import { useAuth } from "@/hooks/useAuth";
+import { useCart, useAuth } from "@/hooks";
 import { Link } from "react-router-dom";
 import { PUBLIC_ASSETS } from "@/constants/paths";
 

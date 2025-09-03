@@ -3,15 +3,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/auth-content";
-import { CartProvider } from "@/hooks/cart-content";
+import { AuthProvider, CartProvider } from "@/hooks";
 import Index from "./pages/Index";
 import Cart from "./pages/Cart";
 import Contact from "./pages/Contact";
 import Checkout from "./pages/Checkout";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import { ProductsProvider } from "./hooks/products-content";
+import { ProductsProvider } from "./hooks/products";
 
 const queryClient = new QueryClient();
 const baseName = import.meta.env.MODE === "production" ? "/green-basket-flow" : "";

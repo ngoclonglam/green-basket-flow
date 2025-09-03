@@ -1,12 +1,11 @@
 import { Navigation } from "@/components/ui/navigation";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductCard } from "@/components/products/ProductCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Truck, Shield, Leaf, Star, Filter } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
-import { useAuth } from "@/hooks/useAuth";
+import { Truck, Shield, Leaf, Star } from "lucide-react";
+import { useProducts, useAuth } from "@/hooks";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { PUBLIC_ASSETS } from "@/constants/paths";

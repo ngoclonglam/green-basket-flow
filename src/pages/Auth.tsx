@@ -6,9 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Leaf, ArrowLeft } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useToast } from '@/hooks';
 import { Link, useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/useToast';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
