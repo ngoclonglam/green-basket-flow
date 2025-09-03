@@ -2,14 +2,17 @@ import { Navigation } from "@/components/ui/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
 import { useCart, useAuth } from "@/hooks";
 import { Link } from "react-router-dom";
 import { PUBLIC_ASSETS } from "@/constants/paths";
+import { useState } from "react";
 
 const Cart = () => {
   const { state, updateQuantity, removeFromCart } = useCart();
   const { user } = useAuth();
+  const [inputValues, setInputValues] = useState<Record<string, string>>({});
   
   // Remove the redirect for non-logged-in users - they can now use cart as guests
 
@@ -79,18 +82,49 @@ const Cart = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => {
+                            const newQuantity = Math.max(1, item.quantity - 1);
+                            updateQuantity(item.id, newQuantity);
+                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity.toString() }));
+                          }}
                           className="h-8 w-8 p-0"
                         >
                           <Minus className="w-3 h-3" />
                         </Button>
                         
-                        <span className="font-semibold w-8 text-center text-sm">{item.quantity}</span>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={inputValues[item.id] ?? item.quantity.toString()}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setInputValues(prev => ({ ...prev, [item.id]: value }));
+                          }}
+                          onBlur={(e) => {
+                            const value = parseInt(e.target.value);
+                            if (!isNaN(value) && value >= 1) {
+                              updateQuantity(item.id, value);
+                            } else {
+                              setInputValues(prev => ({ ...prev, [item.id]: item.quantity.toString() }));
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.currentTarget.blur();
+                            }
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          className="h-8 w-12 text-center text-sm font-semibold p-1"
+                        />
                         
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => {
+                            const newQuantity = item.quantity + 1;
+                            updateQuantity(item.id, newQuantity);
+                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity.toString() }));
+                          }}
                           className="h-8 w-8 p-0"
                         >
                           <Plus className="w-3 h-3" />
