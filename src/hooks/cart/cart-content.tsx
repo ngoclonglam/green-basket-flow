@@ -187,23 +187,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addToCart = async (product: Product) => {
-    try {
-      // Guest just add temporary item
-      if (!user) {
-        dispatch({ type: 'ADD_ITEM', payload: product });
-        
-        toast({
-          title: "Added to cart",
-          description: `${product.name} has been added to your cart`,
-          variant: "success"
-        });
-        return;
-      }
-      
-      // Update local state immediately for better UX
-      dispatch({ type: 'ADD_ITEM', payload: product });
+    dispatch({ type: 'ADD_ITEM', payload: product });  
+    toast({
+      title: "Added to cart",
+      description: `${product.name} has been added to your cart`,
+      variant: "success"
+    });
     
-      // Sync with database
+    if (!user) return;
+
+    // Sync with database
+    try {
       const { error } = await supabase
         .from('cart_items')
         .upsert({
@@ -215,12 +209,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         });
 
       if (error) throw error;
-
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart`,
-        variant: "success"
-      });
     } catch (error: unknown) {
       console.error('Error adding to cart:', error);
       toast({
@@ -262,22 +250,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = async (productId: string, quantity: number) => {
-    if (!user) {
-      // Guest users can only remove items, not change quantities
-      if (quantity <= 0) {
-        removeFromCart(productId);
-      }
+    dispatch ({ type: 'UPDATE_QUANTITY', payload: { id: productId, quantity } });
+
+    if (quantity <= 0) {
+      await removeFromCart(productId);
       return;
     }
 
+    if (!user) return;
+    
     try {
-      dispatch({ type: 'UPDATE_QUANTITY', payload: { id: productId, quantity } });
-
-      if (quantity <= 0) {
-        await removeFromCart(productId);
-        return;
-      }
-
       const { error } = await supabase
         .from('cart_items')
         .update({ quantity })
@@ -297,16 +279,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const clearCart = async () => {
+    dispatch({ type: 'CLEAR_CART' });
+
     if (!user) {
       // Guest user - clear local cart
-      dispatch({ type: 'CLEAR_CART' });
       clearGuestCartStorage();
       return;
     }
 
     try {
-      dispatch({ type: 'CLEAR_CART' });
-
       const { error } = await supabase
         .from('cart_items')
         .delete()

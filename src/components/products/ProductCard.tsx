@@ -118,7 +118,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 <span className="text-xl sm:text-2xl font-bold text-primary">${getDiscountedPrice().toFixed(2)}</span>
                 <span className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</span>
               </>
-            ) : (
+          ) : (
               <span className="text-xl sm:text-2xl font-bold text-primary">${product.price.toFixed(2)}</span>
             )}
           </div>
