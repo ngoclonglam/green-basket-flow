@@ -14,8 +14,6 @@ const Cart = () => {
   const { user } = useAuth();
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
   
-  // Remove the redirect for non-logged-in users - they can now use cart as guests
-
   if (state.loading) {
     return (
       <>
@@ -85,7 +83,7 @@ const Cart = () => {
                           onClick={() => {
                             const newQuantity = Math.max(1, item.quantity - 1);
                             updateQuantity(item.id, newQuantity);
-                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity > 99 ? "99+" : newQuantity.toString() }));
+                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity.toString() }));
                           }}
                           className="h-8 w-8 p-0"
                         >
@@ -95,10 +93,9 @@ const Cart = () => {
                         <Input
                           type="number"
                           min="1"
-                          value={inputValues[item.id] ?? (item.quantity > 99 ? "99+" : item.quantity.toString())}
+                          value={inputValues[item.id] ?? item.quantity.toString()}
                           onChange={(e) => {
                             const value = e.target.value;
-                            if (value === "99+") return; // Prevent editing "99+" display
                             setInputValues(prev => ({ ...prev, [item.id]: value }));
                           }}
                           onBlur={(e) => {
@@ -106,7 +103,7 @@ const Cart = () => {
                             if (!isNaN(value) && value >= 1) {
                               updateQuantity(item.id, value);
                             } else {
-                              setInputValues(prev => ({ ...prev, [item.id]: item.quantity > 99 ? "99+" : item.quantity.toString() }));
+                              setInputValues(prev => ({ ...prev, [item.id]: item.quantity.toString() }));
                             }
                           }}
                           onKeyDown={(e) => {
@@ -115,14 +112,9 @@ const Cart = () => {
                             }
                           }}
                           onFocus={(e) => {
-                            if (e.target.value === "99+") {
-                              setInputValues(prev => ({ ...prev, [item.id]: item.quantity.toString() }));
-                              setTimeout(() => e.target.select(), 0);
-                            } else {
-                              e.target.select();
-                            }
+                            e.target.select();
                           }}
-                          className="h-8 w-12 text-center text-sm font-semibold p-1"
+                          className="h-8 w-full sm:w-[75px] text-center text-sm font-semibold p-1 sm:p-1"
                         />
                         
                         <Button
@@ -131,7 +123,7 @@ const Cart = () => {
                           onClick={() => {
                             const newQuantity = item.quantity + 1;
                             updateQuantity(item.id, newQuantity);
-                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity > 99 ? "99+" : newQuantity.toString() }));
+                            setInputValues(prev => ({ ...prev, [item.id]: newQuantity.toString() }));
                           }}
                           className="h-8 w-8 p-0"
                         >

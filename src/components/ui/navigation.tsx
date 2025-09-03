@@ -57,7 +57,7 @@ export const Navigation = () => {
               <span className="hidden sm:block">Cart</span>
               {state.items.length > 0 && (
                 <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {state.items.reduce((sum, item) => sum + item.quantity, 0)}
+                  {state.items.reduce((sum, item) => sum + item.quantity, 0) > 99 ? '99+' : state.items.reduce((sum, item) => sum + item.quantity, 0)}
                 </Badge>
               )}
             </Button>
