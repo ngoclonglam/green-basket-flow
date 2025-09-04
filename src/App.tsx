@@ -10,6 +10,8 @@ import Contact from "./pages/Contact";
 import Checkout from "./pages/Checkout";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import { Unauthorized } from "./pages/Unauthorized";
+import { AdminLayout, AdminDashboard } from "./pages/Admin";
 import { ProductsProvider } from "./hooks/products";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,11 @@ const App = () => (
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminDashboard />} />
+                  {/* Future admin routes will be added here */}
+                </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

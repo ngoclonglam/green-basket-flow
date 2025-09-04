@@ -73,6 +73,60 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          price: number
+          product_id: string
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          price?: number
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category_id: string | null
@@ -141,6 +195,7 @@ export type Database = {
           id: string
           last_name: string | null
           phone: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
           updated_at: string
           user_id: string
         }
@@ -152,6 +207,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
           updated_at?: string
           user_id: string
         }
@@ -163,6 +219,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
           updated_at?: string
           user_id?: string
         }
@@ -173,10 +230,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { user_uuid: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      is_admin: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "owner" | "admin" | "staff" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -303,6 +367,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["owner", "admin", "staff", "customer"],
+    },
   },
 } as const

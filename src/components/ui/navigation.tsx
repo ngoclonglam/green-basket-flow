@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Phone, Home, Leaf, User, LogOut, Settings } from "lucide-react";
+import { ShoppingCart, Phone, Home, Leaf, User, LogOut, Settings, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -8,7 +8,7 @@ import { useCart, useAuth } from "@/hooks";
 export const Navigation = () => {
   const location = useLocation();
   const { state } = useCart();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
   
@@ -47,6 +47,22 @@ export const Navigation = () => {
             </Button>
           </Link>
           
+          {isAdmin() && (
+            <Link to="/admin" className="hidden lg:block">
+              <Button 
+                variant={isActive('/admin') || location.pathname.startsWith('/admin') ? 'default' : 'ghost'} 
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <Shield className="w-4 h-4" />
+                <span className="hidden xl:block">Admin</span>
+                <Badge variant="secondary" className="text-xs">
+                  {profile?.role?.toUpperCase()}
+                </Badge>
+              </Button>
+            </Link>
+          )}
+          
           <Link to="/cart">
             <Button 
               variant={isActive('/cart') ? 'default' : 'ghost'} 
@@ -77,9 +93,11 @@ export const Navigation = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="flex flex-col space-y-1 p-2">
-                  <p className="text-sm font-medium truncate">{user.email}</p>
+                  <p className="text-sm font-medium truncate">
+                    {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}`.trim() : user.email}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    Welcome back!
+                    {profile?.role ? `${profile.role.charAt(0).toUpperCase() + profile.role.slice(1)} • Welcome back!` : 'Welcome back!'}
                   </p>
                 </div>
                 <DropdownMenuSeparator />
@@ -87,6 +105,18 @@ export const Navigation = () => {
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
+                {isAdmin() && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center">
+                        <Shield className="mr-2 h-4 w-4" />
+                        <span>Admin Dashboard</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sign out</span>
