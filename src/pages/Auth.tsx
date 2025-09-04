@@ -8,16 +8,22 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Leaf, ArrowLeft } from 'lucide-react';
 import { useAuth, useToast } from '@/hooks';
 import { Link, useNavigate } from 'react-router-dom';
+import { SignUpSchema, SignInSchema, sanitizeHtml } from '@/utils/validation';
+import { PasswordStrengthIndicator } from '@/components/auth/PasswordStrengthIndicator';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [attemptCount, setAttemptCount] = useState(0);
   
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -30,28 +36,77 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  // Rate limiting: prevent too many attempts
+  const isRateLimited = attemptCount >= 5;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setValidationErrors([]);
+
+    // Rate limiting check
+    if (isRateLimited) {
+      setError('Too many attempts. Please wait a few minutes before trying again.');
+      setLoading(false);
+      return;
+    }
 
     try {
+      // Validate input based on form type
+      const formData = {
+        email: sanitizeHtml(email.trim()),
+        password,
+        ...(isLogin ? {} : {
+          confirmPassword,
+          firstName: sanitizeHtml(firstName.trim()),
+          lastName: sanitizeHtml(lastName.trim()),
+        })
+      };
+
+      const schema = isLogin ? SignInSchema : SignUpSchema;
+      const validation = schema.safeParse(formData);
+
+      if (!validation.success) {
+        const errors = validation.error.errors.map(err => err.message);
+        setValidationErrors(errors);
+        setLoading(false);
+        return;
+      }
+
       let result;
       if (isLogin) {
-        result = await signIn(email, password);
+        result = await signIn(validation.data.email, validation.data.password);
       } else {
-        result = await signUp(email, password, firstName, lastName);
+        // TypeScript knows this is signup data due to schema validation
+        const signupData = validation.data as typeof validation.data & { firstName: string; lastName: string };
+        result = await signUp(
+          signupData.email, 
+          signupData.password, 
+          signupData.firstName, 
+          signupData.lastName
+        );
       }
 
       if (result.error) {
         setError(result.error.message);
+        setAttemptCount(prev => prev + 1);
       } else if (!isLogin) {
         toast({
           title: "Check your email",
           description: "We've sent you a confirmation link to complete your registration.",
         });
         setIsLogin(true);
+        // Reset form
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setFirstName('');
+        setLastName('');
+        setAttemptCount(0);
       } else {
+        // Successful login - reset attempt counter
+        setAttemptCount(0);
         navigate('/');
       }
     } catch (err: unknown) {
@@ -60,10 +115,17 @@ const Auth = () => {
       } else {
         setError('An unexpected error occurred');
       }
+      setAttemptCount(prev => prev + 1);
     } finally {
       setLoading(false);
     }
   };
+
+  // Reset validation errors when switching between login/signup
+  useEffect(() => {
+    setValidationErrors([]);
+    setError('');
+  }, [isLogin]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
@@ -155,7 +217,7 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={6}
+                    minLength={isLogin ? 6 : 8}
                     autoComplete={isLogin ? "current-password" : "new-password"}
                   />
                   <Button
@@ -168,16 +230,57 @@ const Auth = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
                 </div>
-                {!isLogin && (
-                  <p className="text-sm text-muted-foreground">
-                    Password must be at least 6 characters long
-                  </p>
-                )}
+                {!isLogin && <PasswordStrengthIndicator password={password} />}
               </div>
+
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required={!isLogin}
+                      autoComplete="new-password"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {validationErrors.length > 0 && (
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    <ul className="list-disc list-inside space-y-1">
+                      {validationErrors.map((error, index) => (
+                        <li key={index}>{error}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
 
               {error && (
                 <Alert variant="destructive">
                   <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              {isRateLimited && (
+                <Alert variant="destructive">
+                  <AlertDescription>
+                    Too many failed attempts. Please wait a few minutes before trying again.
+                  </AlertDescription>
                 </Alert>
               )}
 

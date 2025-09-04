@@ -15,10 +15,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle(); // Use maybeSingle instead of single to handle missing profiles gracefully
 
       if (error) {
         console.error('Error fetching user profile:', error);
+        return null;
+      }
+
+      // If no profile exists, return null gracefully
+      if (!data) {
+        console.warn('No profile found for user:', userId);
         return null;
       }
 

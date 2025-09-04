@@ -40,6 +40,7 @@ const AdminSidebar = () => {
     { title: 'Products', url: '/admin/products', icon: Package },
     { title: 'Orders', url: '/admin/orders', icon: ShoppingCart },
     { title: 'Users', url: '/admin/users', icon: Users, requiredRole: ['owner', 'admin'] },
+    { title: 'Security', url: '/admin/security', icon: Shield, requiredRole: ['owner', 'admin'] },
     { title: 'Analytics', url: '/admin/analytics', icon: TrendingUp },
     { title: 'Reports', url: '/admin/reports', icon: FileText },
     { title: 'Settings', url: '/admin/settings', icon: Settings, requiredRole: ['owner', 'admin'] },
@@ -58,7 +59,7 @@ const AdminSidebar = () => {
             <Shield className="h-6 w-6 text-primary" />
             <div>
               <h2 className="text-lg font-semibold">Admin Panel</h2>
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="secondary" className="text-xs">
                 {profile?.role?.toUpperCase()}
               </Badge>
             </div>

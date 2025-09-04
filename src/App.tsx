@@ -12,6 +12,8 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { Unauthorized } from "./pages/Unauthorized";
 import { AdminLayout, AdminDashboard } from "./pages/Admin";
+import { AdminProducts } from "./pages/admin/AdminProducts";
+import { AdminSecurity } from "./pages/admin/AdminSecurity";
 import { ProductsProvider } from "./hooks/products";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
                 <Route path="/unauthorized" element={<Unauthorized />} />
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminDashboard />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="security" element={<AdminSecurity />} />
                   {/* Future admin routes will be added here */}
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
