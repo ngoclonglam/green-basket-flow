@@ -5,9 +5,11 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const envDir = path.resolve(__dirname, "./env");
+  const env = loadEnv(mode, envDir, "");
 
   return {
+    envDir,
     server: {
       host: "::",
       port: 8080,
@@ -23,5 +25,8 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
+    css: {
+      postcss: path.resolve(__dirname, "./config/postcss.config.js")
+    }
   };
 });
