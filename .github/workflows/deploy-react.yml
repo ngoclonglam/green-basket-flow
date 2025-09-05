@@ -34,7 +34,11 @@ jobs:
 
       - name: Build project
         env:
-          VITE_BASE_URL: "/${{ github.event.repository.name }}/"
+          # Set these in Repository Settings → Secrets and variables → Actions → New repository secret
+          # For GitHub Pages project sites, set VITE_BASE_URL to "/<repo-name>/" (e.g. "/green-basket-flow/")
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
 
       - name: Setup Pages
