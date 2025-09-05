@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Truck, Shield, Leaf, Star } from "lucide-react";
 import { useProducts, useAuth } from "@/hooks";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PUBLIC_ASSETS } from "@/constants/paths";
 
 const Index = () => {
@@ -38,6 +38,27 @@ const Index = () => {
   ];
 
   const [videoLoaded, setVideoLoaded] = useState(false);
+  // Controlled Tabs state
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const topCategories = categories.slice(0, categories.length);
+
+  // Memorize products grouped by category to avoid repeated filtering on render
+  const productsByCategory = useMemo(() => {
+    const map = new Map<string, typeof products[number][]>();
+    for (const c of categories) map.set(c.id, []);
+    for (const p of products) {
+      const arr = map.get(p.category_id) ?? [];
+      arr.push(p);
+      map.set(p.category_id, arr);
+    }
+    return map;
+  }, [products, categories]);
+
+  // Visible products depend on active tab
+  const visibleProducts = useMemo(() => {
+    if (activeTab === "all") return products;
+    return productsByCategory.get(activeTab) ?? [];
+  }, [activeTab, products, productsByCategory]);
     
   return (
     <>
@@ -135,14 +156,14 @@ const Index = () => {
               <Button onClick={() => window.location.reload()}>Try Again</Button>
             </div>
           ) : (
-            <Tabs defaultValue="all" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <div className="flex justify-center mb-6 sm:mb-8">
                 <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full max-w-5xl overflow-x-auto text-xs sm:text-sm">
                   <TabsTrigger value="all" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
                     <Leaf className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden xs:block">All</span>
                   </TabsTrigger>
-                  {categories.slice(0, 5).map((category) => (
+                  {topCategories.map((category) => (
                     <TabsTrigger key={category.id} value={category.id} className="px-2 sm:px-4 whitespace-nowrap">
                       <span className="truncate">{category.name.split(' ')[0]}</span>
                     </TabsTrigger>
@@ -152,7 +173,7 @@ const Index = () => {
 
               <TabsContent value="all">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                  {products.map((product) => (
+                  {visibleProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}
                 </div>
@@ -165,11 +186,9 @@ const Index = () => {
                     <p className="text-sm sm:text-base text-muted-foreground">{category.description}</p>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                    {products
-                      .filter(product => product.category_id === category.id)
-                      .map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                      ))}
+                    {visibleProducts.map((product) => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
                   </div>
                 </TabsContent>
               ))}
