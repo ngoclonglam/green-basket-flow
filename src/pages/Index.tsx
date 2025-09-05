@@ -74,7 +74,7 @@ const Index = () => {
             loop
             playsInline
             preload="metadata"
-            className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
+            className={`w-full h-full object-cover transition-opacity duration-300 ease-out ${videoLoaded ? 'opacity-90' : 'opacity-0'}`}
             onLoadedData={() => setVideoLoaded(true)}
           >
           <source src={PUBLIC_ASSETS.HERO_VIDEO} type="video/mp4" />
@@ -146,9 +146,27 @@ const Index = () => {
           </div>
 
           {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-              <p className="text-muted-foreground mt-4">Loading fresh products...</p>
+            <div aria-live="polite">
+              {/* Optional: Tabs skeleton bar to reserve height of TabsList */}
+              <div className="flex justify-center mb-6 sm:mb-8">
+                <div className="w-full max-w-5xl h-10 bg-muted/60 animate-pulse rounded" />
+              </div>
+              {/* Products Skeleton Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="rounded-lg border bg-card overflow-hidden">
+                    <div className="aspect-square bg-muted animate-pulse" />
+                    <div className="p-3 sm:p-4 space-y-2">
+                      <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+                      <div className="h-3 bg-muted animate-pulse rounded w-5/6" />
+                      <div className="h-6 bg-muted animate-pulse rounded w-1/2" />
+                    </div>
+                    <div className="p-3 sm:p-4 pt-0">
+                      <div className="h-9 bg-muted animate-pulse rounded" />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : error ? (
             <div className="text-center py-12">
