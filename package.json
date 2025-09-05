@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint -c config/eslint.config.js 'src/**/*.{ts,tsx}'",
     "preview": "vite preview",
-    "serve": "vite build --mode localbuild && npx serve -s dist"
+    "serve": "vite build && npx serve -s dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
